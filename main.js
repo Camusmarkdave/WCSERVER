@@ -4,6 +4,8 @@
 //const express = reqiure('express');
 import express from 'express'; //Same thing
 const __dirname = import.meta.dirname;
+import bodyParser from 'body-parser';
+
 
 const app = express();
 
@@ -33,7 +35,7 @@ app.get('/getStudent', (req, res) => {
 });
 
 
-app.get('/getAdmin', (req, res) => {
+app.post('/postAdmin', urlencodeParser, (req, res) => {
     var response = {
         adminId: req.query.adminId,
         firstName: req.query.firstName,
