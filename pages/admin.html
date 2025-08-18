@@ -2,9 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Student Form</title>
+  <title>Admin Form</title>
   <style>
-    
     body {
       font-family: 'Georgia', serif;
       display: flex;
@@ -12,15 +11,22 @@
       align-items: center;
       height: 100vh;
       background: linear-gradient(45deg, #8B5A2B, #CD853F, #F4A460);
+      margin: 0;
     }
 
-    form {
+    .container {
       background-color: rgba(255, 248, 220, 0.95);
       padding: 30px;
       border-radius: 10px;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-      width: 320px;
+      width: 350px;
       border: 4px solid #8B5A2B;
+    }
+
+    h2 {
+      text-align: center;
+      color: #5C4033;
+      margin-bottom: 20px;
     }
 
     label {
@@ -30,7 +36,7 @@
       color: #5C4033;
     }
 
-    input[type="text"] {
+    input[type="text"], input[type="file"] {
       width: 100%;
       padding: 8px;
       margin-bottom: 15px;
@@ -56,22 +62,26 @@
   </style>
 </head>
 <body>
-    <form action="/postAdmin" method="POST">
-        <label for="id">Admin ID</label>
-        <input type="text" id="adminId" name="adminId">
-        <br>
-        <label for="firstName">First Name</label>
-        <input type="text" id="firstname" name="firstname">
-        <br>
-        <label for="id">Last Name</label>
-        <input type="text" id="lastName" name="lastName">
-        <br>
-        <label for="id">Department</label>
-        <input type="text" id="department" name="department">
-        <br>
-        <input type="submit" value="Submit">
+  <div class="container">
+    <h2>Admin Form with File Upload</h2>
+    <form action="/postAdmin" method="POST" enctype="multipart/form-data">
+      <label for="adminId">Admin ID</label>
+      <input type="text" id="adminId" name="adminId">
+
+      <label for="firstName">First Name</label>
+      <input type="text" id="firstName" name="firstName">
+
+      <label for="lastName">Last Name</label>
+      <input type="text" id="lastName" name="lastName">
+
+      <label for="department">Department</label>
+      <input type="text" id="department" name="department">
+
+      <label for="file">Upload File</label>
+      <input type="file" id="file" name="file">
+
+      <input type="submit" value="Submit">
     </form>
+  </div>
 </body>
 </html>
-
-

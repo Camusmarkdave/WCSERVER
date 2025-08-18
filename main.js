@@ -1,56 +1,76 @@
+// MARK DAVE CAMUS - WD-302
 
-//MARK DAVE CAMUS - WD-302
+import express from 'express';
+import multer from 'multer';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-//const express = reqiure('express');
-import express from 'express'; //Same thing
-const __dirname = import.meta.dirname;
-import bodyParser from 'body-parser';
+// File Path Setup
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-
+// Initialize app
 const app = express();
 
-//home
+// ===== Multer storage config =====
+var storage = multer.diskStorage({
+    destination: (req, file, callback) => {
+        callback(null, 'uploads/'); 
+    },
+    filename: (req, file, callback) => {
+        callback(null, file.originalname); 
+    }
+});
+var upload = multer({ storage: storage }).single('file');
+
+// ===== Static files =====
+app.use('/uploads', express.static(__dirname + '/uploads'));
+
+// ===== ROUTES =====
+
+// Home page
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/pages/home.html');
 });
-//student form
+
+// Student form page
 app.get('/studentForm', (req, res) => {
     res.sendFile(__dirname + '/pages/student.html');
 });
-//admin form
+
+// Admin form page
 app.get('/adminForm', (req, res) => {
     res.sendFile(__dirname + '/pages/admin.html');
 });
 
+// Student form handler (GET)
 app.get('/getStudent', (req, res) => {
     var response = {
         studentId: req.query.studentId,
         firstName: req.query.firstName,
         lastName: req.query.lastName,
         section: req.query.section
-    }
+    };
 
-    console.log("Response is: ", response);
-    res.end(`Recieved Data: ${JSON.stringify(response)}`);
+    console.log("Student Response:", response);
+    res.end(`Received Data: ${JSON.stringify(response)}`);
 });
 
-
-app.post('/postAdmin', urlencodeParser, (req, res) => {
+// Admin form handler (POST + file upload)
+app.post('/postAdmin', upload, (req, res) => {
     var response = {
-        adminId: req.query.adminId,
-        firstName: req.query.firstName,
-        lastName: req.query.lastName,
-        department: req.query.department
-    }
+        adminId: req.body.adminId,
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        department: req.body.department,
+        uploadedFile: req.file ? req.file.originalname : "No file uploaded"
+    };
 
-    console.log("Response is: ", response);
-    res.end(`Recieved Data: ${JSON.stringify(response)}`);
+    console.log("Admin Response:", response);
+    res.end(`Received Data: ${JSON.stringify(response)}`);
 });
 
-const server = app.listen(5000, () =>{
-    const host = server.address().address;
-    const port = server.address().port;
-    // console.log ("Server running at http://%s:%s", host, port);
-    // console.log ("Server running at http://"+" host"+" port");
-    console.log (`Server running at http://${host}:${port}`);
-})
+// Server Run
+const server = app.listen(5000, () => {
+    console.log(`Server running at http://localhost:5000`);
+});
