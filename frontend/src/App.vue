@@ -1,47 +1,42 @@
-<script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
-</script>
-
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
+  <div id="app">
+    <header class="nav">
+      <nav>
+        <router-link to="/">Home</router-link>
+        <router-link to="/studentForm">Student Form</router-link>
+        <router-link to="/adminForm">Admin Form</router-link>
+      </nav>
+    </header>
 
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  </header>
-
-  <main>
-    <TheWelcome />
-  </main>
+    <main>
+      <router-view />
+    </main>
+  </div>
 </template>
 
+<script setup lang="ts">
+// top-level app; nothing else needed here
+</script>
+
 <style scoped>
-header {
-  line-height: 1.5;
+.nav {
+  background: linear-gradient(45deg, #8B5A2B, #CD853F);
+  padding: 12px;
 }
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
+nav {
+  display:flex;
+  gap:12px;
+  justify-content:center;
 }
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
+nav a {
+  color: white;
+  text-decoration: none;
+  font-weight: 700;
+  padding: 6px 10px;
+  border-radius:6px;
 }
+nav a.router-link-exact-active {
+  background: rgba(255,255,255,0.12);
+}
+main { padding: 20px; }
 </style>
