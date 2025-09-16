@@ -1,70 +1,148 @@
 <template>
-  <form class="form" @submit.prevent="submit">
+  <div class="form-container">
     <h2>Student Form</h2>
+    <form @submit.prevent="addStudent">
+      <div>
+        <label>Student ID:</label>
+        <input v-model="student.student_id" required />
+      </div>
+      <div>
+        <label>First Name:</label>
+        <input v-model="student.first_name" required />
+      </div>
+      <div>
+        <label>Last Name:</label>
+        <input v-model="student.last_name" required />
+      </div>
+      <div>
+        <label>Section:</label>
+        <input v-model="student.section" required />
+      </div>
+      <button type="submit">Add Student</button>
+    </form>
 
-    <label for="studentId">Student ID</label>
-    <input id="studentId" v-model="studentId" type="text" />
-
-    <label for="firstName">First Name</label>
-    <input id="firstName" v-model="firstName" type="text" />
-
-    <label for="lastName">Last Name</label>
-    <input id="lastName" v-model="lastName" type="text" />
-
-    <label for="section">Section</label>
-    <input id="section" v-model="section" type="text" />
-
-    <input type="submit" :value="loading ? 'Submitting...' : 'Submit'" />
-
-    <p v-if="result" class="result">{{ result }}</p>
-  </form>
+    <h3>Students List</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Student ID</th>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>Section</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(s, index) in students" :key="s.student_id">
+          <td>{{ s.student_id }}</td>
+          <td>{{ s.first_name }}</td>
+          <td>{{ s.last_name }}</td>
+          <td>{{ s.section }}</td>
+          <td>
+            <button @click="deleteStudent(index)">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </template>
 
-<script setup lang="ts">
-import { ref } from 'vue';
-
-const studentId = ref('');
-const firstName = ref('');
-const lastName = ref('');
-const section = ref('');
-const result = ref('');
-const loading = ref(false);
-
-async function submit() {
-  loading.value = true;
-  result.value = '';
-  try {
-    const params = new URLSearchParams({
-      studentId: studentId.value,
-      firstName: firstName.value,
-      lastName: lastName.value,
-      section: section.value
-    });
-    const res = await fetch(`/getStudent?${params.toString()}`, { method: 'GET' });
-    const text = await res.text();
-    result.value = text;
-  } catch (err) {
-    result.value = 'Error: ' + (err as Error).message;
-  } finally {
-    loading.value = false;
-  }
-}
+<script>
+export default {
+  data() {
+    return {
+      student: {
+        student_id: "",
+        first_name: "",
+        last_name: "",
+        section: "",
+      },
+      students: [],
+    };
+  },
+  methods: {
+    async addStudent() {
+      try {
+        const res = await fetch("http://localhost:3000/api/students", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(this.student),
+        });
+        const data = await res.json();
+        this.students.push(data);
+        this.student = { student_id: "", first_name: "", last_name: "", section: "" };
+      } catch (err) {
+        console.error(err);
+      }
+    },
+    async deleteStudent(index) {
+      const student = this.students[index];
+      try {
+        await fetch(`http://localhost:3000/api/students/${student.student_id}`, {
+          method: "DELETE",
+        });
+        this.students.splice(index, 1);
+      } catch (err) {
+        console.error(err);
+      }
+    },
+  },
+  async mounted() {
+    const res = await fetch("http://localhost:3000/api/students");
+    this.students = await res.json();
+  },
+};
 </script>
 
 <style scoped>
-.form {
-  font-family: 'Georgia', serif;
-  background-color: rgba(255, 248, 220, 0.95);
-  padding: 30px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.3);
-  width: 320px;
-  border: 4px solid #8B5A2B;
-  margin: 40px auto;
+.form-container {
+  background: #fff5e6;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 0px 10px #ccc;
+  margin: 20px auto;
+  max-width: 600px;
 }
-label { display:block; margin-bottom:5px; font-weight:bold; color:#5C4033; }
-input[type="text"] { width:100%; padding:8px; margin-bottom:15px; border:1px solid #A0522D; border-radius:4px; background:#FFF8DC; }
-input[type="submit"] { width:100%; padding:10px; background:#8B5A2B; border:none; color:white; font-weight:bold; border-radius:4px; cursor:pointer; }
-input[type="submit"]:hover { background:#A0522D; }
-.result { margin-top:12px; background:#fff; padding:8px; border-radius:6px; border:1px solid #ddd; }
+h2, h3 {
+  text-align: center;
+  color: #5c3d2e;
+}
+form div {
+  margin-bottom: 10px;
+}
+label {
+  display: block;
+  font-weight: bold;
+}
+input {
+  width: 100%;
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+button {
+  background: #5c3d2e;
+  color: white;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+button:hover {
+  background: #814c2c;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+th, td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+th {
+  background: #c49c78;
+  color: white;
+}
 </style>

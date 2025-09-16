@@ -3,8 +3,8 @@
     <header class="nav">
       <nav>
         <router-link to="/">Home</router-link>
-        <router-link to="/studentForm">Student Form</router-link>
-        <router-link to="/adminForm">Admin Form</router-link>
+        <router-link to="/student">Student Form</router-link>
+        <router-link to="/admin">Admin Form</router-link>
       </nav>
     </header>
 
@@ -15,7 +15,7 @@
 </template>
 
 <script setup lang="ts">
-// top-level app; nothing else needed here
+// nothing needed here
 </script>
 
 <style scoped>
@@ -24,19 +24,21 @@
   padding: 12px;
 }
 nav {
-  display:flex;
-  gap:12px;
-  justify-content:center;
+  display: flex;
+  gap: 12px;
+  justify-content: center;
 }
 nav a {
   color: white;
   text-decoration: none;
   font-weight: 700;
   padding: 6px 10px;
-  border-radius:6px;
+  border-radius: 6px;
 }
 nav a.router-link-exact-active {
-  background: rgba(255,255,255,0.12);
+  background: rgba(255, 255, 255, 0.12);
 }
-main { padding: 20px; }
+main {
+  padding: 20px;
+}
 </style>
